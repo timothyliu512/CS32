@@ -211,10 +211,16 @@ Sequence::Sequence()
 }    // Create an empty sequence (i.e., one whose size() is 0).
 
 
-Sequence::Sequence(int arraySize) :
-maxSequenceSize(arraySize), sequenceSize( 0 )
+Sequence::Sequence(int arraySize)
 { // Constructor with int parameter
     
+    if ( arraySize < 0)
+    {
+        exit(1);
+    }
+    
+    maxSequenceSize = arraySize;
+    sequenceSize = 0;
     sequenceArray = new ItemType[arraySize];
     
 }

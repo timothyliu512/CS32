@@ -170,6 +170,70 @@ int main() {
     assert( EmptyConcatResult.size() == 1 );  // Check size
     assert( EmptyConcatResult.find("A") == 0 ); // Check original non empty sequence
     
+    Sequence sameConcat1;
+    sameConcat1.insert(0,"d");
+    sameConcat1.insert(0,"o");
+    sameConcat1.insert(0,"g");
+    assert( sameConcat1.size() == 3 );
+    concatReverse(sameConcat1, sameConcat1, sameConcat1); // Using same sequence for seq1, seq2, and result
+    assert( sameConcat1.size() == 6 ); // Size check for after concatReversing the same sequence
+    
+    // Check if sequence is correct after concatReversing the same sequence
+    ItemType comparing;
+    sameConcat1.get(0,comparing);
+    assert( comparing == "d" );
+    sameConcat1.get(1,comparing);
+    assert( comparing == "o" );
+    sameConcat1.get(2,comparing);
+    assert( comparing == "g" );
+    sameConcat1.get(3,comparing);
+    assert( comparing == "d" );
+    sameConcat1.get(4,comparing);
+    assert( comparing == "o" );
+    sameConcat1.get(5,comparing);
+    assert( comparing == "g" );
+    
+    
+    for (int i = 0; i < 6; i++)
+    {sameConcat1.erase(0);}
+    sameConcat1.insert(0,"d");
+    sameConcat1.insert(0,"o");
+    sameConcat1.insert(0,"g");
+    
+    Sequence sameConcat2;
+    sameConcat2.insert(0,"f");
+    sameConcat2.insert(0,"r");
+    sameConcat2.insert(0,"o");
+    sameConcat2.insert(0,"g");
+    
+    concatReverse(sameConcat1, sameConcat2, sameConcat1); // concatReverse where result is one of the sequences you're reversing
+    
+    assert( sameConcat1.size() == 7 ); // Check size of result sequence
+    sameConcat1.get(0,comparing); // Check result sequence
+    assert( comparing == "d" );
+    sameConcat1.get(1,comparing);
+    assert( comparing == "o" );
+    sameConcat1.get(2,comparing);
+    assert( comparing == "g" );
+    sameConcat1.get(3,comparing);
+    assert( comparing == "f" );
+    sameConcat1.get(4,comparing);
+    assert( comparing == "r" );
+    sameConcat1.get(5,comparing);
+    assert( comparing == "o" );
+    sameConcat1.get(6,comparing);
+    assert( comparing == "g" );
+    
+    assert( sameConcat2.size() == 4 ); // Check that other sequence hasn't been altered
+    sameConcat2.get(3,comparing);
+    assert( comparing == "f" );
+    sameConcat2.get(2,comparing);
+    assert( comparing == "r" );
+    sameConcat2.get(1,comparing);
+    assert( comparing == "o" );
+    sameConcat2.get(0,comparing);
+    assert( comparing == "g" );
+    
     Sequence largeSequence;
     assert( largeSequence.insert(0,"c") == 0);
     assert( largeSequence.insert(0,"b") == 0);

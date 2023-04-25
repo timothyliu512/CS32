@@ -7,7 +7,7 @@
 
 #include "Sequence.h"
 #include <iostream>
-
+#include <string>
 
 using namespace std;
 //using ItemType = unsigned long;
@@ -396,12 +396,11 @@ Sequence::Sequence(const Sequence& other)
 
 // ASSIGNMENT OPERATOR
 Sequence& Sequence::operator=(const Sequence& rhs){
-    sequenceSize = rhs.size();
-    
     if (this != &rhs) // If not equal
     {
         Sequence temp(rhs); // Create a temporary sequence with exact characteristics of righthand side sequence
         swap(temp); // Put temporary sequence into the one you want
+        sequenceSize = rhs.size(); // Copy over size
     }
     return *this;
 }
@@ -428,7 +427,6 @@ Sequence::~Sequence(){
         delete p->prev;     // Delete the previous node
     }
     delete tail;            // Then delete the remaining node
-    std::cerr << "Destructed" << std::endl;
 }
     
 int subsequence(const Sequence& seq1, const Sequence& seq2)
@@ -470,34 +468,28 @@ int subsequence(const Sequence& seq1, const Sequence& seq2)
 
 void concatReverse(const Sequence& seq1, const Sequence& seq2, Sequence& result)
 {
-    // Clear the result sequence
-    for (int i = 0; i < result.size(); i++)
-    {
-        result.erase(0);
-    }
+    // Make temp sequence to later copy into result
+    Sequence tempSeq;
     
-    // Insert seq1 into result while also reversing
+    // Insert seq1 into temp sequence while also reversing
     for (int i = 0; i < seq1.size(); i++)   // Iterate through seq1 values
     {
         ItemType temp;                      // Temporarily store value to be copied over
         seq1.get(i, temp);                  // Get the value from seq1
-        cerr << temp;
-        result.insert(0, temp);             // Append the value into beginning of result sequence
+        tempSeq.insert(0, temp);             // Append the value into beginning of temp sequence
         
     }
-    cerr << endl; result.dump(); cerr << endl;
     
-    // Insert seq2 into result after seq1 while also reversing
+    // Insert seq2 into temp sequence after seq1 while also reversing
     for (int i = 0; i < seq2.size(); i++)   // Iterate through seq2 values
     {
         ItemType temp;                      // Temporarily store value to be copied over
         seq2.get(i, temp);                  // Get the value from seq2
-        cerr << temp;
-        result.insert(seq1.size(), temp);   // Append the value into result sequence AFTER position where seq1 finished
+        tempSeq.insert(seq1.size(), temp);   // Append the value into temp sequence AFTER position where seq1 finished
     }
     
-    cerr << endl; result.dump(); cerr << endl;
-    
+    // Put the temp sequence into the result sequence you want
+    tempSeq.swap( result );
 }
 
 

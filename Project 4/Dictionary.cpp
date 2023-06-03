@@ -61,7 +61,7 @@ void DictionaryImpl::insert(std::string word)
 // #1
 void DictionaryImpl::lookup(std::string letters, void callback(std::string)) const
 {
-    // Bounds check
+    // Bounds check for undefined behavior
     if (callback == nullptr)
         return;
     

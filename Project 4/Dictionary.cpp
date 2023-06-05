@@ -12,12 +12,12 @@
 #include <utility>  // for swap
 
 // My includes
-#include <functional>
+#include <functional> // Hash function
 #include <stdlib.h>
-#include <vector>
-#include <algorithm>
+#include <vector>   //
+#include <algorithm> // Sort
 #include <fstream>
-//using namespace std;
+using namespace std;
 
 void removeNonLetters(std::string& s);
 
@@ -26,12 +26,12 @@ void removeNonLetters(std::string& s);
 class DictionaryImpl
 {
   public:
-    DictionaryImpl(int /* maxBuckets */) {}
+    DictionaryImpl(int maxBuckets) : buckets(maxBuckets){}
     ~DictionaryImpl() {}
     void insert(std::string word);
     void lookup(std::string letters, void callback(std::string)) const;
   private:
-    std::unordered_map < std::string, std::list<std::string> > uMap;
+    std::vector<std::list<std::string> > buckets;
 };
 
 // Constructs the dictionary hashtable
@@ -52,11 +52,17 @@ void DictionaryImpl::insert(std::string word)
         // team -> aemt
         // mate -> aemt
         
-        // Assign word to its correct bucket with its other anagrams based on its matching sorted letters
-        uMap[sortedWord].push_back(word);
+        // Apply hash function and get hash value
+        unsigned int index = std::hash<string>()(sortedWord) % buckets.size();
+        
+        // Access the list of anagrams
+        std::list<std::string>& bucket = buckets[index];
+        
+        // Insert word to the end of the list
+        bucket.push_back(word);
     }
-    
 }
+    
 
 // #1
 void DictionaryImpl::lookup(std::string letters, void callback(std::string)) const
@@ -75,24 +81,35 @@ void DictionaryImpl::lookup(std::string letters, void callback(std::string)) con
     // Sort the word so all characters in alphabetical order
     sort(letters.begin(), letters.end());
     
-    // Find the correct bucket (Gives you the corresponding list with the hash value)
-    // If not found, you will be at the end of the unordered_map
-    std::unordered_map<std::string, std::list<std::string> >::const_iterator p = uMap.find(letters);
+    // Apply hash function and get hash value to find correct bucket
+    unsigned int index = std::hash<string>()(letters) % buckets.size();
+
+    // Access the found list (bucket)
+    const std::list<std::string>& bucket = buckets[index];
     
-    // As long as we're not at the end of our unordered_map (meaning you found the associated list)
-    if(p != uMap.end() )
+    // Iterate through each anagram in the bucket, outputting the anagrams
+    for (std::list<std::string>::const_iterator word = bucket.begin(); word != bucket.end(); word++)
     {
-        // Get the list associated with the bucket that you found
-        const std::list<std::string>& list = p->second;
-        
-        // Iterate through list of anagrams
-        for(std::list<std::string>::const_iterator listIterator = list.begin(); listIterator != list.end() ; listIterator++)
+        // Sort current word in list
+        std::string sortedWord = *word;
+        sort(sortedWord.begin(), sortedWord.end());
+        // Check if it's actually an anagram of the word you inputted
+        if(sortedWord == letters)
         {
-            // Return the found anagram
-            callback(*listIterator);
+            callback(*word);
         }
     }
     
+    
+    // Get the list associated with the bucket that you found
+        
+        
+        // Iterate through list of anagrams
+        
+        
+            // Return the found anagram
+            
+        
 }
 
 // Given function (unchanged)
